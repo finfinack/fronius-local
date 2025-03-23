@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "promingo.name" -}}
+{{- define "fronius-local.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "promingo.fullname" -}}
+{{- define "fronius-local.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "promingo.chart" -}}
+{{- define "fronius-local.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "promingo.labels" -}}
-helm.sh/chart: {{ include "promingo.chart" . }}
-{{ include "promingo.selectorLabels" . }}
+{{- define "fronius-local.labels" -}}
+helm.sh/chart: {{ include "fronius-local.chart" . }}
+{{ include "fronius-local.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "promingo.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "promingo.name" . }}
+{{- define "fronius-local.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "fronius-local.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "promingo.serviceAccountName" -}}
+{{- define "fronius-local.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "promingo.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "fronius-local.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
