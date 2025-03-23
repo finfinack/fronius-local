@@ -25,12 +25,13 @@ func main() {
 	}
 	logging.SetMinLogLevel(l)
 
-	cfg, err := config.ReadFromFile(*configFile)
-	if err != nil {
-		log.Fatalf("unable to read config: %s\n", err)
-	}
-
 	for {
+		log.Infof("reading config from %s", *configFile)
+		cfg, err := config.ReadFromFile(*configFile)
+		if err != nil {
+			log.Fatalf("unable to read config: %s\n", err)
+		}
+
 		m, err := mqtt.New(cfg.MQTT)
 		if err != nil {
 			log.Fatalf("unable to create mqtt client: %s\n", err)
@@ -50,7 +51,7 @@ func main() {
 			log.Infoln("exiting")
 			return
 		}
-		log.Infof("sleeping for %s, until %s\n", cfg.Interval, time.Now().Add(cfg.Interval))
+		log.Infof("sleeping for %s, until %s\n", cfg.Interval, time.Now().Add(cfg.Interval).Format(time.DateTime))
 		time.Sleep(time.Duration(cfg.Interval))
 	}
 }

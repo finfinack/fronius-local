@@ -56,6 +56,7 @@ func (m *MQTT) onConnectionLostHandler(client mq.Client, err error) {
 }
 
 func (m *MQTT) Publish(batt *fronius.Battery) error {
+	m.log.Infof("publishing battery data to MQTT topic %q", m.cfg.Topic)
 	message, err := json.Marshal(batt)
 	if err != nil {
 		return fmt.Errorf("unable to marshal message: %s", err)

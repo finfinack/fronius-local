@@ -9,9 +9,11 @@ import (
 )
 
 type Config struct {
-	MQTT     *MQTT         `json:"mqtt"`
-	Fronius  *Fronius      `json:"fronius"`
-	Interval time.Duration `json:"interval"`
+	MQTT    *MQTT    `json:"mqtt"`
+	Fronius *Fronius `json:"fronius"`
+
+	RAWInterval string `json:"interval"`
+	Interval    time.Duration
 }
 
 func (c *Config) Verify() error {
@@ -76,12 +78,23 @@ func ReadFromFile(file string) (*Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to read config from %q: %s", file, err)
 	}
+
 	config := &Config{}
 	if err := json.Unmarshal(data, config); err != nil {
 		return nil, fmt.Errorf("unable to parse JSON in %q: %s", file, err)
 	}
+
 	if err := config.Verify(); err != nil {
 		return nil, err
 	}
+
+	if config.RAWInterval != "" {
+		var err error
+		config.Interval, err = time.ParseDuration(config.RAWInterval)
+		if err != nil {
+			return nil, fmt.Errorf("unable to parse interval: %s", err)
+		}
+	}
+
 	return config, nil
 }
