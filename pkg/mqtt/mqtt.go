@@ -1,6 +1,7 @@
 package mqtt
 
 import (
+	"encoding/json"
 	"fmt"
 
 	mq "github.com/eclipse/paho.mqtt.golang"
@@ -8,6 +9,12 @@ import (
 	"github.com/finfinack/fronius-local/pkg/config"
 	"github.com/finfinack/fronius-local/pkg/fronius"
 	"github.com/finfinack/logger/logging"
+)
+
+const (
+	mqttQoS0 = 0 // At most once delivery
+	mqttQoS1 = 1 // At least once delivery
+	mqttQoS2 = 2 // Exactly once delivery
 )
 
 type MQTT struct {
@@ -24,7 +31,10 @@ func New(cfg *config.MQTT) (*MQTT, error) {
 
 	opts := mq.NewClientOptions()
 	opts.AddBroker(cfg.Broker)
-	opts.SetClientID(cfg.ClientID)
+	opts.SetUsername(cfg.Username)
+	if cfg.Password != "" {
+		opts.SetPassword(cfg.Password)
+	}
 	opts.OnConnect = m.onConnectHandler
 	opts.OnConnectionLost = m.onConnectionLostHandler
 
@@ -46,6 +56,12 @@ func (m *MQTT) onConnectionLostHandler(client mq.Client, err error) {
 }
 
 func (m *MQTT) Publish(batt *fronius.Battery) error {
+	message, err := json.Marshal(batt)
+	if err != nil {
+		return fmt.Errorf("unable to marshal message: %s", err)
+	}
 
-	return nil
+	token := m.client.Publish(m.cfg.Topic, mqttQoS0, false, message)
+	token.Wait()
+	return token.Error()
 }

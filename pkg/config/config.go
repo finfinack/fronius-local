@@ -32,7 +32,8 @@ func (c *Config) Verify() error {
 
 type MQTT struct {
 	Broker   string `json:"broker"`
-	ClientID string `json:"client_id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 	Topic    string `json:"topic"`
 }
 
@@ -40,8 +41,8 @@ func (m *MQTT) Verify() error {
 	if m.Broker == "" {
 		return errors.New("broker needs to be set")
 	}
-	if m.ClientID == "" {
-		return errors.New("client_id needs to be set")
+	if m.Username == "" {
+		return errors.New("username needs to be set")
 	}
 	if m.Topic == "" {
 		return errors.New("topic needs to be set")

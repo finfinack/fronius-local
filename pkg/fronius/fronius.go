@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/icholy/digest"
 
@@ -76,6 +77,7 @@ func (f *Fronius) FetchBattery() (*Battery, error) {
 	if err := json.Unmarshal(data, batt); err != nil {
 		return nil, fmt.Errorf("unable to unmarshal response body: %s", err)
 	}
+	batt.Time = time.Now()
 
 	return batt, nil
 }

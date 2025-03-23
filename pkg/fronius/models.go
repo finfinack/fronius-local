@@ -1,6 +1,10 @@
 package fronius
 
+import "time"
+
 type Battery struct {
+	Time time.Time `json:"time"`
+
 	BatteryCalibration                bool   `json:"BAT_CALIBRATION"`
 	BatteryEnabled                    bool   `json:"BAT_ENABLED"`
 	BatteryM0SOCMax                   int    `json:"BAT_M0_SOC_MAX"`
