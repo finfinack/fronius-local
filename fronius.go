@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"time"
 
 	"github.com/finfinack/fronius-local/pkg/config"
 	"github.com/finfinack/fronius-local/pkg/fronius"
@@ -29,18 +30,27 @@ func main() {
 		log.Fatalf("unable to read config: %s\n", err)
 	}
 
-	m, err := mqtt.New(cfg.MQTT)
-	if err != nil {
-		log.Fatalf("unable to create mqtt client: %s\n", err)
-	}
+	for {
+		m, err := mqtt.New(cfg.MQTT)
+		if err != nil {
+			log.Fatalf("unable to create mqtt client: %s\n", err)
+		}
 
-	f := fronius.New(cfg.Fronius)
-	batt, err := f.FetchBattery()
-	if err != nil {
-		log.Fatalf("unable to fetch: %s\n", err)
-	}
+		f := fronius.New(cfg.Fronius)
+		batt, err := f.FetchBattery()
+		if err != nil {
+			log.Fatalf("unable to fetch: %s\n", err)
+		}
 
-	if err := m.Publish(batt); err != nil {
-		log.Fatalf("unable to publish: %s\n", err)
+		if err := m.Publish(batt); err != nil {
+			log.Fatalf("unable to publish: %s\n", err)
+		}
+
+		if cfg.Interval == 0 {
+			log.Infoln("exiting")
+			return
+		}
+		log.Infof("sleeping for %s, until %s\n", cfg.Interval, time.Now().Add(cfg.Interval))
+		time.Sleep(time.Duration(cfg.Interval))
 	}
 }

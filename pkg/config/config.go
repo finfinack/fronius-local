@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 )
 
 type Config struct {
-	MQTT    *MQTT    `json:"mqtt"`
-	Fronius *Fronius `json:"fronius"`
+	MQTT     *MQTT         `json:"mqtt"`
+	Fronius  *Fronius      `json:"fronius"`
+	Interval time.Duration `json:"interval"`
 }
 
 func (c *Config) Verify() error {
