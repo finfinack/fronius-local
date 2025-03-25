@@ -60,7 +60,7 @@ func (m *MQTT) Publish(msg *Message) error {
 	if err != nil {
 		return fmt.Errorf("unable to marshal message: %s", err)
 	}
-	m.log.Infoln(string(message))
+	m.log.Debugln(string(message))
 
 	token := m.client.Publish(m.cfg.Topic, mqttQoS0, false, message)
 	token.Wait()
