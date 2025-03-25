@@ -7,7 +7,6 @@ import (
 	mq "github.com/eclipse/paho.mqtt.golang"
 
 	"github.com/finfinack/fronius-local/pkg/config"
-	"github.com/finfinack/fronius-local/pkg/fronius"
 	"github.com/finfinack/logger/logging"
 )
 
@@ -55,12 +54,13 @@ func (m *MQTT) onConnectionLostHandler(client mq.Client, err error) {
 	m.log.Warnf("MQTT connection lost: %s", err)
 }
 
-func (m *MQTT) Publish(batt *fronius.Battery) error {
-	m.log.Infof("publishing battery data to MQTT topic %q", m.cfg.Topic)
-	message, err := json.Marshal(batt)
+func (m *MQTT) Publish(msg *Message) error {
+	m.log.Infof("publishing Fronius data to MQTT topic %q", m.cfg.Topic)
+	message, err := json.Marshal(msg)
 	if err != nil {
 		return fmt.Errorf("unable to marshal message: %s", err)
 	}
+	m.log.Infoln(string(message))
 
 	token := m.client.Publish(m.cfg.Topic, mqttQoS0, false, message)
 	token.Wait()

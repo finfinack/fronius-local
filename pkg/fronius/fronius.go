@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"time"
 
 	"github.com/icholy/digest"
 
@@ -17,6 +16,7 @@ import (
 
 const (
 	batteriesPath = "/config/batteries"
+	timeOfUsePath = "/config/timeofuse"
 )
 
 type Fronius struct {
@@ -70,6 +70,21 @@ func (f *Fronius) request(method, path string, body []byte) ([]byte, error) {
 	return io.ReadAll(res.Body)
 }
 
+func (f *Fronius) FetchTimeOfUse() ([]*TimeOfUse, error) {
+	f.log.Infoln("fetching time of use data")
+	data, err := f.request(http.MethodGet, timeOfUsePath, nil)
+	if err != nil {
+		return nil, fmt.Errorf("unable to run request: %s", err)
+	}
+
+	resp := &TimeOfUseResponse{}
+	if err := json.Unmarshal(data, resp); err != nil {
+		return nil, fmt.Errorf("unable to unmarshal response body: %s", err)
+	}
+
+	return resp.TimeOfUse, nil
+}
+
 func (f *Fronius) FetchBattery() (*Battery, error) {
 	f.log.Infoln("fetching battery data")
 	data, err := f.request(http.MethodGet, batteriesPath, nil)
@@ -77,11 +92,10 @@ func (f *Fronius) FetchBattery() (*Battery, error) {
 		return nil, fmt.Errorf("unable to run request: %s", err)
 	}
 
-	batt := &Battery{}
-	if err := json.Unmarshal(data, batt); err != nil {
+	resp := &Battery{}
+	if err := json.Unmarshal(data, resp); err != nil {
 		return nil, fmt.Errorf("unable to unmarshal response body: %s", err)
 	}
-	batt.Time = time.Now()
 
-	return batt, nil
+	return resp, nil
 }

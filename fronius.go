@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"time"
 
 	"github.com/finfinack/fronius-local/pkg/config"
@@ -14,6 +15,27 @@ var (
 	logLevel   = flag.String("log", "INFO", "Log level")
 	configFile = flag.String("config", "config.json", "File path where the configuration is stored.")
 )
+
+func fetchAndPush(f *fronius.Fronius, m *mqtt.MQTT) error {
+	batt, err := f.FetchBattery()
+	if err != nil {
+		return fmt.Errorf("unable to fetch: %s", err)
+	}
+	timeOfUse, err := f.FetchTimeOfUse()
+	if err != nil {
+		return fmt.Errorf("unable to fetch: %s", err)
+	}
+
+	msg, err := mqtt.NewMessage(batt, timeOfUse)
+	if err != nil {
+		return fmt.Errorf("unable to create message: %s", err)
+	}
+
+	if err := m.Publish(msg); err != nil {
+		return fmt.Errorf("unable to publish: %s", err)
+	}
+	return nil
+}
 
 func main() {
 	flag.Parse()
@@ -38,13 +60,8 @@ func main() {
 		}
 
 		f := fronius.New(cfg.Fronius)
-		batt, err := f.FetchBattery()
-		if err != nil {
-			log.Fatalf("unable to fetch: %s\n", err)
-		}
-
-		if err := m.Publish(batt); err != nil {
-			log.Fatalf("unable to publish: %s\n", err)
+		if err := fetchAndPush(f, m); err != nil {
+			log.Fatalf("unable to fetch and push: %s\n", err)
 		}
 
 		if cfg.Interval == 0 {
