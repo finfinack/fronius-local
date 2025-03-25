@@ -15,10 +15,10 @@ type Message struct {
 }
 
 type CurrentLimits struct {
-	ChargeMax    int `json:"charge_max"`
-	ChargeMin    int `json:"charge_min"`
-	DischargeMax int `json:"discharge_max"`
-	DischargeMin int `json:"discharge_min"`
+	ChargeMax    *int `json:"charge_max,omitempty"`
+	ChargeMin    *int `json:"charge_min,omitempty"`
+	DischargeMax *int `json:"discharge_max,omitempty"`
+	DischargeMin *int `json:"discharge_min,omitempty"`
 }
 
 func NewMessage(batt *fronius.Battery, timeOfUse []*fronius.TimeOfUse) (*Message, error) {
@@ -39,13 +39,13 @@ func NewMessage(batt *fronius.Battery, timeOfUse []*fronius.TimeOfUse) (*Message
 
 		switch t.ScheduleType {
 		case fronius.ScheduleTypeChargeMax:
-			msg.CurrentLimits.ChargeMax = t.Power
+			msg.CurrentLimits.ChargeMax = &t.Power
 		case fronius.ScheduleTypeChargeMin:
-			msg.CurrentLimits.ChargeMin = t.Power
+			msg.CurrentLimits.ChargeMin = &t.Power
 		case fronius.ScheduleTypeDischargeMax:
-			msg.CurrentLimits.DischargeMax = t.Power
+			msg.CurrentLimits.DischargeMax = &t.Power
 		case fronius.ScheduleTypeDischargeMin:
-			msg.CurrentLimits.DischargeMin = t.Power
+			msg.CurrentLimits.DischargeMin = &t.Power
 		default:
 			return nil, fmt.Errorf("unknown schedule type: %s", t.ScheduleType)
 		}
