@@ -16,6 +16,10 @@ const (
 	ScheduleTypeDischargeMin = "DISCHARGE_MIN"
 )
 
+var (
+	timezone = time.UTC
+)
+
 type Battery struct {
 	BatteryCalibration                bool   `json:"BAT_CALIBRATION"`
 	BatteryEnabled                    bool   `json:"BAT_ENABLED"`
@@ -101,19 +105,20 @@ type TimeTable struct {
 }
 
 func (t *TimeTable) IsActive() bool {
-	now := time.Now().Local()
-	return now.After(time.Time(t.Start)) && now.Before(time.Time(t.End))
+	now := time.Now().In(timezone)
+	return now.After(time.Time(t.Start).In(timezone)) && now.Before(time.Time(t.End).In(timezone))
 }
 
 type TimeTableTime time.Time
 
 func (t *TimeTableTime) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), `"`)
-	ti, err := time.Parse(froniusTimeFmt, s)
+	ti, err := time.ParseInLocation(froniusTimeFmt, s, timezone)
 	if err != nil {
 		return err
 	}
-	ti = ti.AddDate(time.Now().Year(), int(time.Now().Month()-1), time.Now().Day()-1)
+	now := time.Now().In(timezone)
+	ti = ti.AddDate(now.Year(), int(now.Month()-1), now.Day()-1)
 	*t = TimeTableTime(ti)
 	return nil
 }

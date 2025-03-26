@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/icholy/digest"
 
@@ -25,7 +26,8 @@ type Fronius struct {
 	client *http.Client
 }
 
-func New(cfg *config.Fronius) *Fronius {
+func New(cfg *config.Fronius, tz *time.Location) *Fronius {
+	timezone = tz
 	return &Fronius{
 		cfg: cfg,
 		log: logging.NewLogger("FRON"),

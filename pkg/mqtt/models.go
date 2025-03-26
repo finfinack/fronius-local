@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/finfinack/fronius-local/pkg/fronius"
+	"github.com/finfinack/logger/logging"
 )
 
 type Message struct {
@@ -22,6 +23,7 @@ type CurrentLimits struct {
 }
 
 func NewMessage(batt *fronius.Battery, timeOfUse []*fronius.TimeOfUse) (*Message, error) {
+	log := logging.NewLogger("MSG")
 	msg := &Message{
 		UpdatedAt:     time.Now(),
 		Battery:       batt,
@@ -37,6 +39,7 @@ func NewMessage(batt *fronius.Battery, timeOfUse []*fronius.TimeOfUse) (*Message
 			continue
 		}
 
+		log.Infof("applicable schedule %q found: %dW", t.ScheduleType, t.Power)
 		switch t.ScheduleType {
 		case fronius.ScheduleTypeChargeMax:
 			msg.CurrentLimits.ChargeMax = &t.Power

@@ -65,7 +65,7 @@ func main() {
 			log.Fatalf("unable to create mqtt client: %s\n", err)
 		}
 
-		f := fronius.New(cfg.Fronius)
+		f := fronius.New(cfg.Fronius, cfg.Timezone)
 		if err := fetchAndPush(f, m); err != nil {
 			log.Fatalf("unable to fetch and push: %s\n", err)
 		}

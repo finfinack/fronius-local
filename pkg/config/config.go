@@ -12,6 +12,8 @@ type Config struct {
 	MQTT    *MQTT    `json:"mqtt"`
 	Fronius *Fronius `json:"fronius"`
 
+	RAWTimezone string `json:"tz"`
+	Timezone    *time.Location
 	RAWInterval string `json:"interval"`
 	Interval    time.Duration
 }
@@ -30,6 +32,12 @@ func (c *Config) Verify() error {
 	if err := c.Fronius.Verify(); err != nil {
 		return err
 	}
+
+	loc, err := time.LoadLocation(c.RAWTimezone)
+	if err != nil {
+		return fmt.Errorf("unable to load timezone %q: %s", c.RAWTimezone, err)
+	}
+	c.Timezone = loc
 
 	return nil
 }
