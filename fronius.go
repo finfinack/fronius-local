@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	Commit  string
+	Commit  = "-"
 	Version = "dev"
 )
 
