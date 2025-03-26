@@ -18,7 +18,7 @@ RUN go vet -v
 RUN go test -v
 
 # Build
-RUN CGO_ENABLED=0 go build -v -ldflags "-X main.Version=${VERSION} -X main.Commit=${COMMIT}" -o /go/bin/fronius .
+RUN CGO_ENABLED=0 go build -v -ldflags "-X main.Version=${tag} -X main.Commit=${commit}" -o /go/bin/fronius .
 
 # Copy the built executable into a new base image and run it
 FROM gcr.io/distroless/static-debian12:nonroot
