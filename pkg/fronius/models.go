@@ -101,7 +101,7 @@ type TimeTable struct {
 }
 
 func (t *TimeTable) IsActive() bool {
-	now := time.Now()
+	now := time.Now().Local()
 	return now.After(time.Time(t.Start)) && now.Before(time.Time(t.End))
 }
 
