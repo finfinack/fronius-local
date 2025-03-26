@@ -12,6 +12,11 @@ import (
 )
 
 var (
+	Commit  string
+	Version = "dev"
+)
+
+var (
 	logLevel   = flag.String("log", "INFO", "Log level")
 	configFile = flag.String("config", "config.json", "File path where the configuration is stored.")
 )
@@ -46,6 +51,7 @@ func main() {
 		log.Fatalf("log level %q is invalid: %s\n", *logLevel, err)
 	}
 	logging.SetMinLogLevel(l)
+	log.Infof("starting fronius-local version %q, commit %q", Version, Commit)
 
 	for {
 		log.Infof("reading config from %s", *configFile)
