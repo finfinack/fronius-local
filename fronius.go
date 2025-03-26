@@ -13,7 +13,7 @@ import (
 
 var (
 	Commit  = "-"
-	Version = "dev"
+	Version = "dev-local"
 )
 
 var (
