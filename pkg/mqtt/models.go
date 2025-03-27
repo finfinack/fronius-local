@@ -25,9 +25,12 @@ type CurrentLimits struct {
 func NewMessage(batt *fronius.Battery, timeOfUse []*fronius.TimeOfUse) (*Message, error) {
 	log := logging.NewLogger("MSG")
 	msg := &Message{
-		UpdatedAt:     time.Now(),
-		Battery:       batt,
-		CurrentLimits: &CurrentLimits{},
+		UpdatedAt: time.Now(),
+		Battery:   batt,
+		CurrentLimits: &CurrentLimits{
+			ChargeMax:    intPtr(fronius.Gen246DefaultChargeMax),
+			DischargeMax: intPtr(fronius.Gen246DefaultDischargeMax),
+		},
 	}
 
 	for _, t := range timeOfUse {
@@ -55,4 +58,8 @@ func NewMessage(batt *fronius.Battery, timeOfUse []*fronius.TimeOfUse) (*Message
 	}
 
 	return msg, nil
+}
+
+func intPtr(i int) *int {
+	return &i
 }

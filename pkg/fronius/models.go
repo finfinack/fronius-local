@@ -14,6 +14,9 @@ const (
 	ScheduleTypeChargeMin    = "CHARGE_MIN"
 	ScheduleTypeDischargeMax = "DISCHARGE_MAX"
 	ScheduleTypeDischargeMin = "DISCHARGE_MIN"
+
+	Gen246DefaultChargeMax    = 6000
+	Gen246DefaultDischargeMax = 6000
 )
 
 var (
