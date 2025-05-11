@@ -13,6 +13,7 @@ type Message struct {
 
 	Battery       *fronius.Battery
 	CurrentLimits *CurrentLimits
+	Version       *fronius.Version
 }
 
 type CurrentLimits struct {
@@ -22,11 +23,12 @@ type CurrentLimits struct {
 	DischargeMin *int `json:"discharge_min,omitempty"`
 }
 
-func NewMessage(batt *fronius.Battery, timeOfUse []*fronius.TimeOfUse) (*Message, error) {
+func NewMessage(batt *fronius.Battery, timeOfUse []*fronius.TimeOfUse, version *fronius.Version) (*Message, error) {
 	log := logging.NewLogger("MSG")
 	msg := &Message{
 		UpdatedAt: time.Now(),
 		Battery:   batt,
+		Version:   version,
 		CurrentLimits: &CurrentLimits{
 			ChargeMax:    intPtr(fronius.Gen246DefaultChargeMax),
 			DischargeMax: intPtr(fronius.Gen246DefaultDischargeMax),

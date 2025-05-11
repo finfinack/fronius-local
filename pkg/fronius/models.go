@@ -23,6 +23,20 @@ var (
 	timezone = time.UTC
 )
 
+type Version struct {
+	APIVersions        map[string]string `json:"apiversions"`
+	ArticleNumber      string            `json:"articleNumber" example:"4,210,153,002"`
+	CommonName         string            `json:"commonName" example:"pilot-0.6e-123456789_1234"`
+	DeviceGroup        string            `json:"devicegroup" example:"S10RW"`
+	DeviceName         string            `json:"devicename" example:"Symo GEN24 6.0"`
+	HardwareID         string            `json:"hardwareId" example:"pilot-0.6e-123456789"`
+	SerialNumber       string            `json:"serialNumber" example:"123456"`
+	Phases             int               `json:"numberOfPhases" example:"3"`
+	HWRevisions        map[string]string `json:"hwrevisions"`
+	SWRevisions        map[string]string `json:"swrevisions"`
+	SoftwareVersionPfx string            `json:"softwareVersionPrefix" example:"ROW"`
+}
+
 type Battery struct {
 	BatteryCalibration                bool   `json:"BAT_CALIBRATION"`
 	BatteryEnabled                    bool   `json:"BAT_ENABLED"`

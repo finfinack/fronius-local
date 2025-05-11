@@ -18,6 +18,7 @@ import (
 const (
 	batteriesPath = "/api/config/batteries"
 	timeOfUsePath = "/api/config/timeofuse"
+	versionPath   = "/api/status/version"
 )
 
 type Fronius struct {
@@ -95,6 +96,21 @@ func (f *Fronius) FetchBattery() (*Battery, error) {
 	}
 
 	resp := &Battery{}
+	if err := json.Unmarshal(data, resp); err != nil {
+		return nil, fmt.Errorf("unable to unmarshal response body: %s", err)
+	}
+
+	return resp, nil
+}
+
+func (f *Fronius) FetchVersion() (*Version, error) {
+	f.log.Infoln("fetching version data")
+	data, err := f.request(http.MethodGet, versionPath, nil)
+	if err != nil {
+		return nil, fmt.Errorf("unable to run request: %s", err)
+	}
+
+	resp := &Version{}
 	if err := json.Unmarshal(data, resp); err != nil {
 		return nil, fmt.Errorf("unable to unmarshal response body: %s", err)
 	}

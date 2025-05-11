@@ -30,8 +30,12 @@ func fetchAndPush(f *fronius.Fronius, m *mqtt.MQTT) error {
 	if err != nil {
 		return fmt.Errorf("unable to fetch: %s", err)
 	}
+	// version, err := f.FetchVersion()
+	// if err != nil {
+	// 	return fmt.Errorf("unable to fetch: %s", err)
+	// }
 
-	msg, err := mqtt.NewMessage(batt, timeOfUse)
+	msg, err := mqtt.NewMessage(batt, timeOfUse, nil)
 	if err != nil {
 		return fmt.Errorf("unable to create message: %s", err)
 	}
