@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	batteriesPath = "/config/batteries"
-	timeOfUsePath = "/config/timeofuse"
+	batteriesPath = "/api/config/batteries"
+	timeOfUsePath = "/api/config/timeofuse"
 )
 
 type Fronius struct {
