@@ -9,9 +9,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/icholy/digest"
-
 	"github.com/finfinack/fronius-local/pkg/config"
+	"github.com/finfinack/fronius-local/pkg/digest"
 	"github.com/finfinack/logger/logging"
 )
 
@@ -37,7 +36,7 @@ func New(cfg *config.Fronius, tz *time.Location) *Fronius {
 				Username: cfg.Username,
 				Password: cfg.Password,
 				FindChallenge: func(h http.Header) (*digest.Challenge, error) {
-					value := h.Get("X-WWW-Authenticate")
+					value := h.Get("X-Www-Authenticate")
 					if value == "" {
 						return nil, digest.ErrNoChallenge
 					}
@@ -59,6 +58,8 @@ func (f *Fronius) request(method, path string, body []byte) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to create request: %s", err)
 	}
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("User-Agent", "fronius-local")
 
 	res, err := f.client.Do(req)
 	if err != nil {

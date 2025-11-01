@@ -5,7 +5,6 @@ go 1.24.1
 require (
 	github.com/eclipse/paho.mqtt.golang v1.5.0
 	github.com/finfinack/logger v0.0.0-20250213175153-e341a71dc05b
-	github.com/icholy/digest v1.1.0
 )
 
 require (
